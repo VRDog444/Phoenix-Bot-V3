@@ -67,6 +67,12 @@ export class Exp {
     }
 
     static async Update(id: string, data: XpRecordData) {
+        const level = data.level || 0;
+        const xp = data.xp || 0;
+        const requiredXp = data.requiredXp || 10;
+
+        if (!await this.Exists(id)) this.Create(id, { level: level, xp: xp, requiredXp: requiredXp });
+
         const rows = await Xp.update({
             level: data.level,
             xp: data.level,
@@ -77,21 +83,14 @@ export class Exp {
     }
 
     static async Create(id: string, data: XpRecordData) {
-        const level = data.level || 0;
-        const xp = data.xp || 0;
-        const requiredXp = data.requiredXp || 10;
+        await Xp.create({
+            id: id,
+            level: data.level,
+            xp: data.xp,
+            requiredXp: data.requiredXp,
+        });
 
-        if (await this.Exists(id)) this.Update(id, { level: level, xp: xp, requiredXp: requiredXp });
-        else {
-            await Xp.create({
-                id: id,
-                level: level,
-                xp: xp,
-                requiredXp: requiredXp,
-            });
-
-            console.log(`[XP] Added Successfully`);
-        }
+        console.log(`[XP] Added Successfully`);
     }
 
     static async Delete(id: string) {
@@ -113,6 +112,11 @@ export class Economy {
     }
 
     static async Update(id: string, data: EconomyRecordData) {
+        const cash = data.cash || 0;
+        const usedDaily = data.usedDaily || false;
+
+        if (!await this.Exists(id)) this.Update(id, { cash: cash, usedDaily: usedDaily });
+
         const rows = await Eco.update({
             cash: data.cash,
             usedDaily: data.usedDaily
@@ -122,19 +126,13 @@ export class Economy {
     }
 
     static async Create(id: string, data: EconomyRecordData) {
-        const cash = data.cash || 0;
-        const usedDaily = data.usedDaily || false;
+        await Eco.create({
+            id: id,
+            cash: data.cash,
+            usedDaily: data.usedDaily,
+        });
 
-        if (await this.Exists(id)) this.Update(id, { cash: cash, usedDaily: usedDaily });
-        else {
-            await Eco.create({
-                id: id,
-                cash: data.cash,
-                usedDaily: data.usedDaily,
-            });
-
-            console.log(`[Economy] Added Successfully`);
-        }
+        console.log(`[Economy] Added Successfully`);
     }
 
     static async Delete(id: string) {
