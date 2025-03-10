@@ -46,9 +46,10 @@ exports.Economy = exports.Exp = void 0;
 const Sequelize = __importStar(require("sequelize"));
 const DB_1 = require("./DB");
 const Xp = DB_1.sequelize.define('xp', {
-    userId: {
+    id: {
         type: Sequelize.STRING,
         allowNull: false,
+        primaryKey: true,
     },
     level: {
         type: Sequelize.INTEGER,
@@ -67,9 +68,10 @@ const Xp = DB_1.sequelize.define('xp', {
     }
 });
 const Eco = DB_1.sequelize.define('economy', {
-    userId: {
+    id: {
         type: Sequelize.STRING,
         allowNull: false,
+        primaryKey: true,
     },
     cash: {
         type: Sequelize.INTEGER,
@@ -85,7 +87,7 @@ Eco.sync();
 class Exp {
     static Exists(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const row = yield Xp.findOne({ where: { userId: id } });
+            const row = yield Xp.findOne({ where: { id: id } });
             if (row)
                 return true;
             return false;
@@ -95,7 +97,7 @@ class Exp {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(yield this.Exists(id)))
                 return null;
-            const row = yield Xp.findOne({ where: { userId: id } });
+            const row = yield Xp.findOne({ where: { id: id } });
             return row;
         });
     }
@@ -104,13 +106,14 @@ class Exp {
             const level = data.level || 0;
             const xp = data.xp || 0;
             const requiredXp = data.requiredXp || 10;
+            console.log(`ID: ${id}`);
             if (!(yield this.Exists(id)))
                 yield this.Create(id, { level: level, xp: xp, requiredXp: requiredXp });
             const rows = yield Xp.update({
                 level: data.level,
                 xp: data.level,
                 requiredXp: data.requiredXp,
-            }, { where: { userId: id } });
+            }, { where: { id: id } });
             console.log(`[XP] Successfully updated ${rows} Records`);
         });
     }
@@ -127,7 +130,7 @@ class Exp {
     }
     static Delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield Xp.destroy({ where: { userId: id } });
+            yield Xp.destroy({ where: { id: id } });
         });
     }
 }
@@ -135,7 +138,7 @@ exports.Exp = Exp;
 class Economy {
     static Exists(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const row = yield Eco.findOne({ where: { userId: id } });
+            const row = yield Eco.findOne({ where: { id: id } });
             if (row)
                 return true;
             return false;
@@ -145,7 +148,7 @@ class Economy {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(yield this.Exists(id)))
                 return null;
-            const row = yield Eco.findOne({ where: { userId: id } });
+            const row = yield Eco.findOne({ where: { id: id } });
             return row;
         });
     }
@@ -158,7 +161,7 @@ class Economy {
             const rows = yield Eco.update({
                 cash: data.cash,
                 usedDaily: data.usedDaily
-            }, { where: { userId: id } });
+            }, { where: { id: id } });
             console.log(`[Economy] Successfully updated ${rows} Records`);
         });
     }
@@ -174,7 +177,7 @@ class Economy {
     }
     static Delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield Eco.destroy({ where: { userId: id } });
+            yield Eco.destroy({ where: { id: id } });
         });
     }
 }

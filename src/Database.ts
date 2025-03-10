@@ -2,9 +2,10 @@ import * as Sequelize from "sequelize";
 import { sequelize } from "./DB";
 
 const Xp = sequelize.define('xp', {
-    userId: {
+    id: {
         type: Sequelize.STRING,
         allowNull: false,
+        primaryKey: true,
     },
     level: {
         type: Sequelize.INTEGER,
@@ -24,9 +25,10 @@ const Xp = sequelize.define('xp', {
 });
 
 const Eco = sequelize.define('economy', {
-    userId: {
+    id: {
         type: Sequelize.STRING,
         allowNull: false,
+        primaryKey: true,
     },
     cash: {
         type: Sequelize.INTEGER,
@@ -54,7 +56,7 @@ interface EconomyRecordData {
 
 export class Exp {
     static async Exists(id: string): Promise<boolean> {
-        const row = await Xp.findOne({ where: { userId: id } });
+        const row = await Xp.findOne({ where: { id: id } });
 
         if (row) return true;
         return false;
@@ -62,7 +64,7 @@ export class Exp {
 
     static async Fetch(id: string) {
         if (!await this.Exists(id)) return null;
-        const row = await Xp.findOne({ where: { userId: id } });
+        const row = await Xp.findOne({ where: { id: id } });
         return row;
     }
 
@@ -71,13 +73,15 @@ export class Exp {
         const xp = data.xp || 0;
         const requiredXp = data.requiredXp || 10;
 
+        console.log(`ID: ${id}`);
+
         if (!await this.Exists(id)) await this.Create(id, { level: level, xp: xp, requiredXp: requiredXp });
 
         const rows = await Xp.update({
             level: data.level,
             xp: data.level,
             requiredXp: data.requiredXp,
-        }, { where: { userId: id } });
+        }, { where: { id: id } });
 
         console.log(`[XP] Successfully updated ${rows} Records`);
     }
@@ -94,20 +98,20 @@ export class Exp {
     }
 
     static async Delete(id: string) {
-        await Xp.destroy({ where: { userId: id } });
+        await Xp.destroy({ where: { id: id } });
     }
 }
 
 export class Economy {
     static async Exists(id: string): Promise<boolean> {
-        const row = await Eco.findOne({ where: { userId: id } });
+        const row = await Eco.findOne({ where: { id: id } });
         if (row) return true;
         return false;
     }
 
     static async Fetch(id: string) {
         if (!await this.Exists(id)) return null;
-        const row = await Eco.findOne({ where: { userId: id } });
+        const row = await Eco.findOne({ where: { id: id } });
         return row;
     }
 
@@ -120,7 +124,7 @@ export class Economy {
         const rows = await Eco.update({
             cash: data.cash,
             usedDaily: data.usedDaily
-        }, { where: { userId: id } });
+        }, { where: { id: id } });
 
         console.log(`[Economy] Successfully updated ${rows} Records`);
     }
@@ -136,6 +140,6 @@ export class Economy {
     }
 
     static async Delete(id: string) {
-        await Eco.destroy({ where: { userId: id } });
+        await Eco.destroy({ where: { id: id } });
     }
 }
