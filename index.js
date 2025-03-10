@@ -5,7 +5,7 @@ const path = require('node:path');
 const { token } = require('./config.json');
 
 const client = new Discord.Client({
-	intents: ['Guilds', 'GuildMessages', 'MessageContent'],
+	intents: ['Guilds', 'GuildMessages', 'MessageContent', 'DirectMessages'],
 });
 
 client.commands = new Discord.Collection();
