@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const commands = [];
+const globalCommands = [];
 // Grab all the command folders from the commands directory you created earlier
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -16,7 +17,14 @@ for (const folder of commandFolders) {
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
 		const command = require(filePath);
-		if ('data' in command && 'execute' in command) {
+		if (command.global && command.global === 1 && 'data' in command && 'execute' in command) {
+			globalCommands.push(command.data.toJSON());
+		}
+		else if (command.global && command.global === 0 && 'data' in command && 'execute' in command) {
+			globalCommands.push(command.data.toJSON());
+			commands.push(command.data.toJSON());
+		}
+		if (!command.global && 'data' in command && 'execute' in command) {
 			commands.push(command.data.toJSON());
 		}
 		else {
@@ -34,12 +42,26 @@ const rest = new REST().setToken(token);
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
 		// The put method is used to fully refresh all commands in the guild with the current set
+		for (const command of commands) {
+			if (command.global && command.global === 1) {
+				globalCommands.push(command);
+				commands.splice(commands.indexOf(command), 1);
+			}
+			else if (command.global && command.global === 0) {
+				globalCommands.push(command);
+			}
+		}
 		const data = await rest.put(
 			Routes.applicationGuildCommands(clientId, testServerId),
 			{ body: commands },
 		);
 
-		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+		const globals = await rest.put(
+			Routes.applicationCommands(clientId),
+			{ body: globalCommands }
+		);
+
+		console.log(`Successfully reloaded ${data.length} application (/) commands and ${globals.length} Global commands.`);
 	}
 	catch (error) {
 		// And of course, make sure you catch and log any errors!
