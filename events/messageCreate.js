@@ -1,12 +1,26 @@
-const { Events, EmbedBuilder } = require('discord.js');
+const { Events, EmbedBuilder, ChannelType } = require('discord.js');
 const { Util } = require('../Util');
+const config = require("../config.json");
 
 module.exports = {
 	name: Events.MessageCreate,
 	async execute(message) {
-		const { GetDB } = require("../Database");
 		if (message.author.bot) return;
+		const { GetDB } = require("../Database");
 		const db = GetDB();
+		if (message.channel.type !== ChannelType.GuildText) {
+			db.serialize(() => {
+				db.all("SELECT * FROM reports WHERE author_id = ?", message.author.id, (err, rows) => {
+					if (err) console.error(err);
+					if (rows.length < 1) return;
+					const report = rows[0];
+
+					message.client.users.cache.get(config.dev.devIds[0]).send(`Message from ticket ${report.ticket_id}: ${message.content}`);
+				});
+			});
+		}
+
+		if (message.channel.type === ChannelType.DM) return;
 
 		db.serialize(() => {
 			db.all("SELECT * FROM xp_data WHERE user_id = ?", message.author.id, (err, rows) => {

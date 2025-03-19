@@ -6,6 +6,10 @@ const { token } = require('./config.json');
 
 const client = new Discord.Client({
 	intents: ['Guilds', 'GuildMessages', 'MessageContent', 'DirectMessages'],
+	partials: [
+		Discord.Partials.Message,
+		Discord.Partials.Channel
+	]
 });
 
 client.commands = new Discord.Collection();
