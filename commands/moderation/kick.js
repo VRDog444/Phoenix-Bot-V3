@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, SlashCommandMentionableOption, SlashCommandStringOption } = require("discord.js");
+const { CommandPermissionLevel } = require("../../Util");
 
 module.exports = {
+    permLevel: CommandPermissionLevel.ServerMods,
     data: new SlashCommandBuilder()
         .setName("kick")
         .setDescription("Kick a user")
