@@ -11,7 +11,7 @@ module.exports = {
         const db = GetDB();
         const member = interaction.options.getMentionable("user") || interaction.member;
         db.serialize(() => {
-            db.all("SELECT * FROM xp_data WHERE user_id = ?", interaction.user.id, (err, rows) => {
+            db.all("SELECT * FROM xp_data WHERE user_id = ?", member.user.id, (err, rows) => {
                 const user = rows.length >= 1 ? rows[0] : { level: 0, xp: 0, required_xp: 0 };
                 const embed = new EmbedBuilder().setThumbnail(member.displayAvatarURL()).setTimestamp();
                 embed.addFields([{ name: "Level", value: `${user.level}` }, { name: "Experience", value: `${user.xp}` }, { name: "Required Exp", value: `${user.required_xp}` }]);
