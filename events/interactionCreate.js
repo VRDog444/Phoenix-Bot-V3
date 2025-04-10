@@ -94,10 +94,10 @@ module.exports = {
 					if (interaction.guild.ownerId !== interaction.user.id) return interaction.reply(`You must be the server owner to use this command`);
 					break;
 				case CommandPermissionLevel.ServerAdmins:
-					if (!interaction.member.roles.cache.find(r => r.name.includes("Admin")) || interaction.guild.ownerId === interaction.user.id) return interaction.reply(`You must be a server admin to use this command`);
+					if (!interaction.member.roles.cache.find(r => r.name.includes("Admin")) && interaction.guild.ownerId !== interaction.user.id) return interaction.reply(`You must be a server admin to use this command`);
 					break;
 				case CommandPermissionLevel.ServerMods:
-					if (!interaction.member.roles.cache.find(r => r.name.includes("Mod")) || !interaction.member.roles.cache.find(r => r.name.includes("Admin")) || interaction.guild.ownerId === interaction.user.id) return interaction.reply(`You must be atleast a server mod to use this command.`);
+					if (!interaction.member.roles.cache.find(r => r.name.includes("Mod")) && !interaction.member.roles.cache.find(r => r.name.includes("Admin")) && interaction.guild.ownerId !== interaction.user.id) return interaction.reply(`You must be atleast a server mod to use this command.`);
 					break;
 			}
 		}
