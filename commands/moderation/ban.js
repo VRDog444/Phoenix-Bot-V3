@@ -15,8 +15,10 @@ module.exports = {
     async execute(interaction) {
         const user = interaction.options.getMentionable("user");
         const reason = interaction.options.getString("reason") || "Unspecified";
-        user.kick(reason);
-        user.send(`You have been Banned from \`${interaction.guild.name}\` with reason: \`${reason}\``);
+        user.send(`You have been banned from \`${interaction.guild.name}\` with reason: \`${reason}\``).catch(err => {
+            interaction.reply(`I was unable to send the user a DM.`);
+        });
+        user.ban(reason);
         interaction.channel.send(`${user} was banned with reason: \`${reason}\``);
     }
 };

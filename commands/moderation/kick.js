@@ -15,8 +15,10 @@ module.exports = {
     async execute(interaction) {
         const user = interaction.options.getMentionable("user");
         const reason = interaction.options.getString("reason") || "Unspecified";
+        user.send(`You have been kicked from \`${interaction.guild.name}\` with reason: \`${reason}\``).catch(err => {
+            interaction.reply(`I was unable to send the user a DM.`);
+        });
         user.kick(reason);
-        user.send(`You have been kicked from \`${interaction.guild.name}\` with reason: \`${reason}\``);
         interaction.channel.send(`${user} was kicked with reason: \`${reason}\``);
     }
 };
