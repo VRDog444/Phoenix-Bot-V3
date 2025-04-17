@@ -16,7 +16,7 @@ module.exports = {
                 if (err) console.error(err);
                 if (rows.length < 1) return;
 
-                db.run("DELETE FROM xp_data WHERE user_id = ?", member.user.id);
+                db.run("UPDATE xp_data SET xp = 0, level = 0, required_xp = 10 WHERE user_id = ?", member.user.id);
                 interaction.reply(`XP data for ${member} has been reset.`, MessageFlags.Ephemeral);
             });
         });
