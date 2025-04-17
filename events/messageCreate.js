@@ -37,7 +37,7 @@ module.exports = {
 					if (baseXp >= realXp) {
 						if ((user.xp += realXp) >= user.required_xp) {
 							const xp = (user.xp + realXp) - user.required_xp;
-							const required_xp = user.level >= 5 ? Math.round(user.required_xp *= 2.5) : Math.round(user.required_xp *= 1.75);
+							const required_xp = user.level + 1 >= 5 ? Math.round(user.required_xp *= 2.5) : Math.round(user.required_xp *= 1.75);
 							db.run("UPDATE xp_data SET xp = ?, level = level + 1, required_xp = ?", { 1: xp, 2: required_xp });
 							const embed = new EmbedBuilder().setColor(0xFF4500);
 						embed.setTitle("Level Up!").setDescription(`${message.member} has advanced to level ${user.level + 1}!`);
