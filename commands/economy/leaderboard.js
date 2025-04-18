@@ -15,9 +15,12 @@ module.exports = {
             let data = ``;
             for (let i = 0; i < 10; i++) {
                 if (!rows[i]) break;
-                let row = rows[i];
-                let user = interaction.client.users.cache.get(row["user_id"]);
-                data += `${i + 1}. ${user.displayName} | Level: ${row["level"]}(${row["xp"]} / ${row["required_xp"]})\n`;
+                const row = rows[i];
+                const user = interaction.client.users.cache.get(row["user_id"]);
+                if (!user) break;
+                // const name = user.displayName;
+                // return;
+                data += `${i + 1}. ${user.username} | Level: ${row["level"]}(${row["xp"]} / ${row["required_xp"]})\n`;
             }
 
             interaction.reply(data);
